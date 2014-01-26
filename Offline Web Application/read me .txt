@@ -1,0 +1,5 @@
+when this error:
+Apr 12, 2013 10:37:18 AM org.apache.catalina.core.StandardWrapperValve invoke
+INFO: Servlet jersy is currently unavailable
+
+solution:copy sersy-bundle,asm-3.3.1,jsr311 to lib folder

@@ -1,0 +1,81 @@
+<!DOCTYPE html >
+<html>
+
+<head>
+<title>Offline Ecological Administration</title>
+<link href="layout.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js.js"></script>
+<style>
+  .thumb {
+    height: 75px;
+    border: 1px solid #000;
+    margin: 10px 5px 0 0;
+  }
+</style>
+</head>
+<body>
+<div id="container">
+  <div id="header" align="center"><br/>
+   <h2>Offline Ecological Administration</h2>
+  </div>
+  <div id="mainContent">
+    <div id="areaside" align="center" ><br/>
+    <br/><br/>
+    <label>Areas</label>
+	<select id="areas" onchange="updateReports()"></select><br/><br/>
+	<br/>
+	<input type="button" value="Add report" onclick="showEditor()"/>
+	<br/><br/>
+	<div align="center" id="reportList">
+	</div>
+	</div>
+	<div id="contentside" align="center" >
+	<br/><br/>
+	<div align="center" id="reportEditor"><br/>
+<label>Title</label>
+<input type="text" style="width:350px;" id="reportName"/><br/><br/>
+<div>
+<Textarea id="textEditor" style="width:400px; height:200px;"></Textarea>
+</div>
+<br/>
+<div>
+<div>
+<div align="left" id="images and videos">
+<label>Upload Images and Videos</label>
+<input type="file" accept="video/*|image/*" id="openFile">
+<input type="button" value="Addfile" onclick="addFile()">
+<input type="button" value="Save" onclick="save()"/>
+<input type="button" value="Cancel" onclick="cancel()"/>
+<!--  
+ <input type="button"  value="Sync"  onclick="sync()"/>
+<input type="button" value="TestGeo" onclick="window.open ('geolocation.html', 'newwindow')">
+-->
+
+<p/>
+<div id= "show images and videos">
+<div>
+<output id="list"></output>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+db = openDatabase("report_db", "0.1", "Reaport DB", 10000);
+if (!db)
+{
+	alert("Conecting to DB is failed.");
+}
+else
+{
+	initialAreas();
+	Reporttable();
+	updateAreas();
+	showList();
+}
+</script>
+
+</body>
+</html>

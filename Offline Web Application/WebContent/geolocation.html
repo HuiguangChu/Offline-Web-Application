@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>geolocation</title>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false">
+</script>
+<script type="text/javascript">
+var geo=[];
+var files=[];
+var jsonobj;
+var res="";
+var lat1;
+var lon1;
+function getLocation()
+  {
+  if (navigator.geolocation)
+    {
+    navigator.geolocation.getCurrentPosition(showPosition,showError);
+    }
+  else{x.innerHTML="Geolocation is not supported by this browser.";}
+  }
+
+ 
+function getxhrObject() {
+    var xhrObject = false;
+    // Most browsers (including IE7) use the 3 lines below
+    if (window.XMLHttpRequest) {
+        xhrObject = new XMLHttpRequest();
+    }
+    // Internet Explorer 5/6 will use one of the following
+    else if (window.ActiveXObject) {
+        try {
+        xhrObject = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch(err) {
+                try {
+                xhrObject = new ActiveXObject("Microsoft.XMLHTTP");
+                } catch(err) {
+                xhrObject = false;
+                }
+        }
+    }
+    return xhrObject;
+}
+
+function getPosition(){
+	var client= getxhrObject();
+	client.open("GET","http://128.39.42.198:8080/WebSever/jaxrs/database/position",true);
+  client.setRequestHeader("Content-type","text/plain");
+  client.onreadystatechange = function(e) {
+  if (this.readyState == 4 && this.status == 200) {
+   res= this.responseText;
+   alert(res);
+   jsonobj = JSON.parse(res);
+    for(var i=0;i<jsonobj.length;i++){  
+	   geo.push(jsonobj[i].geolocation);
+	   files.push(jsonobj[i].filename)
+	   }
+   getLocation();
+   showmap();
+  }
+  }
+
+client.send("nihao");
+}
+//var map=null;
+function showmap(){
+	var lat=[];
+	var lon=[];
+	var latlon=[];
+	for(var i=0;i<geo.length;i++){
+	   var arr =geo[i].split(",");//split res
+	    lat.push(arr[0]);
+		lon.push(arr[1]);
+		}
+	//alert(lat);
+	mapholder=document.getElementById('mapholder')
+	mapholder.style.height='500px';
+	mapholder.style.width='500px';
+	var mylatlng=new google.maps.LatLng(lat1,lon1);
+	var myOptions={
+	center:mylatlng,zoom:6,
+	mapTypeId:google.maps.MapTypeId.ROADMAP,
+	mapTypeControl:false,
+	navigationControlOptions:{style:google.maps.NavigationControlStyle.SMALL}
+	};
+	var map=new google.maps.Map(mapholder,myOptions);
+	var marker1=new google.maps.Marker({
+		position:mylatlng,
+		map:map,
+		title:"You are here!"
+		});
+	
+	for(var i =0;i<lat.length;i++){
+		latlon[i]=new google.maps.LatLng(lat[i],lon[i]);
+		var j=i+1;
+		var marker=new google.maps.Marker({
+		 position:latlon[i],
+		 map:map,
+		 title:"place"+j+"!"
+		 });
+	 //add click listener for every marker
+	 showInformation(marker,i);
+	 
+	}
+}
+function showInformation(marker,i){
+	var infowindow = new google.maps.InfoWindow({
+		 content:"<a href='https://www.dropbox.com/home/Camera%20Uploads'> you have "+files[i]+" related to this site to view!</a>",
+		size : new google.maps.Size(30, 30)  
+		 });
+		google.maps.event.addListener(marker, 'click', function() {
+		 infowindow.open(marker.get('map'), marker);
+		 }
+		);
+}
+
+function showPosition(po)
+  {
+  lat1=po.coords.latitude;
+  lon1=po.coords.longitude;
+  }
+  
+function showError(error)
+  {
+  switch(error.code) 
+    {
+    case error.PERMISSION_DENIED:
+      x.innerHTML="User denied the request for Geolocation."
+      break;
+    case error.POSITION_UNAVAILABLE:
+      x.innerHTML="Location information is unavailable."
+      break;
+    case error.TIMEOUT:
+      x.innerHTML="The request to get user location timed out."
+      break;
+    case error.UNKNOWN_ERROR:
+      x.innerHTML="An unknown error occurred."
+      break;
+    }
+  }
+
+
+	
+</script>
+</head>
+<body onload="getPosition()">
+<div id="mapholder" ></div>  
+<input type="button" value="getposition" onclick="showmap()">
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
